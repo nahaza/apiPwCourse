@@ -140,7 +140,7 @@ for (const { testId, params } of thumbsTestData) {
   });
 }
 
-test('get no api key apod', { tag: ['@nasa', '@apod'] }, async ({ request }) => {
+test('NASA-APOD-008 get no api key apod', { tag: ['@nasa', '@apod'] }, async ({ request }) => {
   const property = 'x-api-umbrella-request-id';
   const response = await request.get(endPoint);
   const responseBody = await response.json();
