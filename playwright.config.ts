@@ -39,6 +39,13 @@ export default defineConfig({
         baseURL: 'https://api.nasa.gov',
       },
     },
+    {
+      name: 'restful-booker',
+      testDir: './tests/restful-booker',
+      use: {
+        baseURL: 'https://restful-booker.herokuapp.com',
+      },
+    },
 
     // {
     //   name: 'firefox',
