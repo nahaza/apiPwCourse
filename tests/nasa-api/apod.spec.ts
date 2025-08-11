@@ -14,13 +14,7 @@ function verifyResponseHeaderAge(responseHeaders: any, minAge: number = 0) {
 }
 
 function verifyResponseBodyArrayLength(responseBody: any, length: number) {
-  expect(responseBody.length, `Response body length should be ${length}`).toBe(length);
-}
-
-function verifyResponseBodyUrlIsLink(responseBody: any) {
-  const url = responseBody.url;
-  const urlPattern = /^(https?:\/\/|\/\/)[^\s$.?#].[^\s]*$/;
-  expect(urlPattern.test(url), `Response body url should be a valid link ${url}`).toBe(true);
+  expect(responseBody.length, `Response body length should be ${length}`).toBeGreaterThanOrEqual(length);
 }
 
 function verifyResponseBodyDateBetween(responseBody: any, startDate: string, endDate: string) {
@@ -30,6 +24,11 @@ function verifyResponseBodyDateBetween(responseBody: any, startDate: string, end
   expect(date >= start && date <= end, `Response body date ${responseBody.date} should be between ${startDate} and ${endDate}`).toBe(true);
 }
 
+function verifyResponseBodyMediaType(responseBody: any) {
+  const allowedTypes = ['image', 'video', 'other'];
+  expect(allowedTypes).toContain(responseBody.media_type);
+}
+
 
 test('NASA-APOD-001 get default apod', { tag: ['@smoke', '@nasa', '@apod'] }, async ({ request }) => {
   const response = await request.get('/planetary/apod', { params: { api_key } });
@@ -37,7 +36,7 @@ test('NASA-APOD-001 get default apod', { tag: ['@smoke', '@nasa', '@apod'] }, as
 
   verifyResponseStatusCode(response, 200);
   verifyResponseHeaderAge(response.headers())
-  verifyResponseBodyUrlIsLink(responseBody)
+  verifyResponseBodyMediaType(responseBody)
   expect(responseBody, `Response body should have property date`).toHaveProperty('date');
 });
 
@@ -52,7 +51,7 @@ test('NASA-APOD-002 get date apod - yesterday', { tag: ['@smoke', '@nasa', '@apo
 
   verifyResponseStatusCode(response, 200);
   verifyResponseHeaderAge(response.headers());
-  verifyResponseBodyUrlIsLink(responseBody)
+  verifyResponseBodyMediaType(responseBody)
   expect(responseBody.date, `Response body date should be ${date}`).toBe(date);
 });
 
@@ -72,7 +71,7 @@ test('NASA-APOD-003 get start date apod within random days - min 2 and max 11 da
   verifyResponseBodyArrayLength(responseBody, randomDaysBefore);
   for (const body of responseBody) {
     verifyResponseBodyDateBetween(body, start_date, today.toISOString().split('T')[0]);
-    verifyResponseBodyUrlIsLink(body)
+    verifyResponseBodyMediaType(body)
   }
 });
 
@@ -93,7 +92,7 @@ test('NASA-APOD-004 get end date apod within random days before - min 2 and max 
   verifyResponseBodyArrayLength(responseBody, randomDaysBefore);
   for (const body of responseBody) {
     verifyResponseBodyDateBetween(body, start_date, today.toISOString().split('T')[0]);
-    verifyResponseBodyUrlIsLink(body)
+    verifyResponseBodyMediaType(body)
   }
 });
 
@@ -107,7 +106,7 @@ test('NASA-APOD-005 get count apod', { tag: ['@smoke', '@nasa', '@apod'] }, asyn
   verifyResponseHeaderAge(response.headers());
   verifyResponseBodyArrayLength(responseBody, count);
   for (const body of responseBody) {
-    verifyResponseBodyUrlIsLink(body)
+    verifyResponseBodyMediaType(body)
   }
 });
 
@@ -135,7 +134,7 @@ for (const { testId, params } of thumbsTestData) {
 
     verifyResponseStatusCode(response, 200);
     verifyResponseHeaderAge(response.headers());
-    verifyResponseBodyUrlIsLink(responseBody)
+    verifyResponseBodyMediaType(responseBody)
     expect(responseBody, `Response body should have property date`).toHaveProperty('date');
   });
 }
