@@ -28,7 +28,6 @@ test("RB-0001 get auth token", async () => {
     },
   });
 
-
   expect(result.status()).toBe(200);
   const json = await result.json();
   const headers = result.headers();
@@ -42,6 +41,3 @@ test("RB-0001 get auth token", async () => {
   const validationHeadersResult = schemaHeaders.validate(headers);
   expect(validationHeadersResult.error).toBeUndefined();
 });
-
-
-
