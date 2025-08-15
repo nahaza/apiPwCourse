@@ -1,5 +1,6 @@
 import { test, request, expect } from "@playwright/test";
 import Joi from "joi";
+import { dataCreate, schema, expectedHeaders, schemaHeaders } from "./test-data";
 
 test("RB-0001 get auth token", async () => {
   const context = await request.newContext({
@@ -7,18 +8,6 @@ test("RB-0001 get auth token", async () => {
   });
   const schemaBody = Joi.object({
     token: Joi.string().required(),
-  });
-  const schemaHeaders = Joi.object({
-    date: Joi.date().required(),
-    etag: Joi.string().required(),
-    nel: Joi.string().required(),
-    "x-powered-by": Joi.string().required(),
-    "content-type": Joi.string().required(),
-    "content-length": Joi.string().required(),
-    "report-to": Joi.string().required(),
-    "reporting-endpoints": Joi.string().required(),
-    server: Joi.string().required(),
-    via: Joi.string().required(),
   });
 
   const result = await context.post("/auth", {
@@ -34,10 +23,28 @@ test("RB-0001 get auth token", async () => {
 
   const token = json.token;
   expect(token).toBeDefined();
+  console.log(`Token: ${token}`);
 
   const validationBodyResult = schemaBody.validate(json);
   expect(validationBodyResult.error).toBeUndefined();
 
   const validationHeadersResult = schemaHeaders.validate(headers);
   expect(validationHeadersResult.error).toBeUndefined();
+});
+
+test("RB-0002 create booking, json schema and headers should be valid", async ({ request }) => {
+  const result = await request.post("/booking", {
+    data: dataCreate,
+    failOnStatusCode: true,
+  });
+
+  const json = await result.json();
+  const headers = result.headers();
+
+  const validationResult = schema.validate(json);
+  expect(validationResult.error).toBeUndefined();
+
+  for (const key in expectedHeaders) {
+    expect(headers[key]).toBeDefined();
+  }
 });
