@@ -1,4 +1,4 @@
-name: api tests
+name: api tests sptfy
 on:
   workflow_dispatch:
 
@@ -10,7 +10,7 @@ env:
   SPOTIFY_USER_ID: ${{vars.SPOTIFY_USER_ID}}
 
 jobs:
-  test:
+  testSptfy:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -28,23 +28,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-
-  testAll:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-
