@@ -50,6 +50,11 @@ export default defineConfig({
       name: "spotify",
       testDir: "./tests/spotify",
     },
+        {
+      name: "token-setup",
+      testDir: "./tests/spotify",
+      testMatch: "**/*.@(setup).?(c|m)[jt]s?(x)",
+    },
 
     // {
     //   name: 'firefox',

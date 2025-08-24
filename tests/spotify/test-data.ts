@@ -14,6 +14,7 @@ export const schemaHeaders = Joi.object({
   "content-type": Joi.string().required(),
   "cache-control": Joi.string().required(),
   etag: Joi.string().required(),
+  vary: Joi.string().required(),
   "x-robots-tag": Joi.string().required(),
   "access-control-allow-origin": Joi.string().required(),
   "access-control-allow-headers": Joi.string().required(),

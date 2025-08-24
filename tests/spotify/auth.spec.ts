@@ -1,25 +1,17 @@
-import { expect } from "@playwright/test";
-import { test } from "../../fixtures/fixtures";
+import { test, expect } from "@playwright/test";
 // import { generateAuthUrl } from "../helper/generateAuthUrl";
 
 test("get token, should be valid", async ({ request }) => {
-  const response = await request.post(
-    "https://accounts.spotify.com/api/token",
-    {
-      form: {
-        grant_type: "client_credentials",
-      },
-      headers: {
-        Authorization:
-          "Basic " +
-          Buffer.from(
-            [process.env.SPOTIFY_CLIENT_ID] +
-              ":" +
-              process.env.SPOTIFY_CLIENT_SECRET
-          ).toString("base64"),
-      },
-    }
-  );
+  const response = await request.post("https://accounts.spotify.com/api/token", {
+    form: {
+      grant_type: "client_credentials",
+    },
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from([process.env.SPOTIFY_CLIENT_ID] + ":" + process.env.SPOTIFY_CLIENT_SECRET).toString("base64"),
+    },
+  });
 
   expect(response.status()).toBe(200);
 
@@ -30,9 +22,7 @@ test("get token, should be valid", async ({ request }) => {
 
 // not working because Spotify will suspend account very quickly
 test.skip("get auth", async ({ page }) => {
-  await page.goto(
-    `https://accounts.spotify.com/en/login?login_hint=${process.env.EMAIL}&allow_password=1`
-  );
+  await page.goto(`https://accounts.spotify.com/en/login?login_hint=${process.env.EMAIL}&allow_password=1`);
 
   await page.getByTestId("login-username").fill(process.env.EMAIL!);
   await page.getByTestId("login-button").click();
